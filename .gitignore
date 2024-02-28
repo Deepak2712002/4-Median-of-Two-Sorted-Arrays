@@ -1,32 +1,41 @@
-# Prerequisites
-*.d
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int total_size = nums1.size() + nums2.size();
+        if (total_size % 2 == 1) {
+            return findKthElement(nums1, nums2, total_size / 2 + 1);
+        } else {
+            return (findKthElement(nums1, nums2, total_size / 2) + findKthElement(nums1, nums2, total_size / 2 + 1)) / 2.0;
+        }
+    }
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+private:
+    int findKthElement(const vector<int>& nums1, const vector<int>& nums2, int k) {
+        int m = nums1.size();
+        int n = nums2.size();
+        int index1 = 0, index2 = 0;
 
-# Precompiled Headers
-*.gch
-*.pch
+        while (true) {
+            if (index1 == m) {
+                return nums2[index2 + k - 1];
+            }
+            if (index2 == n) {
+                return nums1[index1 + k - 1];
+            }
+            if (k == 1) {
+                return min(nums1[index1], nums2[index2]);
+            }
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+            int newIndex1 = min(index1 + k / 2 - 1, m - 1);
+            int newIndex2 = min(index2 + k / 2 - 1, n - 1);
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+            if (nums1[newIndex1] <= nums2[newIndex2]) {
+                k -= newIndex1 - index1 + 1;
+                index1 = newIndex1 + 1;
+            } else {
+                k -= newIndex2 - index2 + 1;
+                index2 = newIndex2 + 1;
+            }
+        }
+    }
+};
